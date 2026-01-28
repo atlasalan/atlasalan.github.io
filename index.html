@@ -2,68 +2,32 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlas Sunucu | Yönlendiriliyor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Atlas Sunucu</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { border: 2px solid #0f0; padding: 30px; box-shadow: 0 0 15px #0f0; text-align: center; }
-        .dots { display: inline-block; width: 20px; text-align: left; }
+        /* Sayfadaki tüm boşlukları sıfırlıyoruz */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%; 
+            overflow: hidden; 
+            background-color: #000; 
+        }
+        /* Iframe'i tüm ekranı kaplayacak şekilde ayarlıyoruz */
+        iframe { 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2 id="status">SİSTEME BAĞLANILIYOR</h2>
-        <p>Lütfen bekleyin, güncel tünel aranıyor...</p>
-    </div>
 
-    <script>
-        async function atlasBaglan() {
-            // --- AYARLARIN (Buraları değiştir!) ---
-            const BIN_ID = "697a6f57ae596e708ffec5e3"; 
-            const API_KEY = "$2a$10$JVTjh5wmEcl2AQVbkds1qeAuGTRyID9zOYWAh6FO/zOtnUJrPIX1";
-            // --------------------------------------
+    <iframe src="https://https://dtexua4yg.localto.net/"></iframe>
 
-            const statusEl = document.getElementById('status');
-
-            try {
-                // JSONBin kutusuna en güncel linki soruyoruz
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Master-Key': API_KEY,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Kod: ${response.status}`);
-                }
-
-                const data = await response.json();
-                const hedefUrl = data.record.cloudflare_url;
-
-                if (hedefUrl && hedefUrl.startsWith("https://")) {
-                    statusEl.innerText = "BAĞLANTI BAŞARILI!";
-                    statusEl.style.color = "#fff";
-                    // 1 saniye bekle ve ışınla
-                    setTimeout(() => {
-                        window.location.replace(hedefUrl);
-                    }, 1000);
-                } else {
-                    statusEl.innerText = "SUNUCU KAPALI";
-                    setTimeout(atlasBaglan, 5000); // 5 saniye sonra tekrar dene
-                }
-
-            } catch (error) {
-                statusEl.innerText = "HATA: " + error.message;
-                statusEl.style.color = "red";
-                console.error("Detayli Hata:", error);
-                setTimeout(atlasBaglan, 5000);
-            }
-        }
-
-        // Sayfa yüklenince başlat
-        window.onload = atlasBaglan;
-    </script>
 </body>
 </html>
