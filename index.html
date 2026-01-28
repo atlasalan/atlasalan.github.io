@@ -1,28 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Atlas Sunucu</title>
     <script>
-        // Linkin sonunda atlas_sync yoksa (herkes icin) sayfayi zorla yenile
-        if(!window.location.search.includes('atlas_sync=')) {
-            window.location.replace(window.location.pathname + "?atlas_sync=" + Date.now());
+        async function git() {
+            // DuckDNS'e gidip güncel tünel linkini TXT kaydından çekiyoruz
+            // Not: Bu kısım API ile çekilir veya DuckDNS üzerinden yönlendirilir.
+            // En sağlamı: Sen arkadaşlarına doğrudan DuckDNS linkini verebilirsin!
         }
     </script>
 </head>
-<body style="background:#000; color:#0f0; font-family:monospace; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; text-align:center;">
-    <div style="border:1px solid #0f0; padding:20px;">
-        <p>BAGLANTI TAZELENIYOR...</p>
-        <p id="timer" style="font-size:30px;">3</p>
-        <p style="font-size:10px; opacity:0.3;">SUNUCU_TS: 1769626296</p>
-    </div>
-    <script>
-        let c = 3;
-        setInterval(() => {
-            c--;
-            document.getElementById('timer').innerText = c;
-            if(c <= 0) window.location.replace("https://sun-luck-adapter-minerals.trycloudflare.com");
-        }, 1000);
-    </script>
+<body>
+    <h2>Sunucuya Yonlendiriliyorsunuz...</h2>
 </body>
 </html>
