@@ -2,32 +2,20 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlas Sunucu | Yukleniyor</title>
-    <style>
-        body { background: #000; color: #00ff00; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; }
-        .box { border: 2px solid #00ff00; padding: 40px; border-radius: 10px; box-shadow: 0 0 20px #00ff00; }
-        #timer { font-size: 48px; font-weight: bold; margin-top: 10px; }
-        .status { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; }
-    </style>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Atlas Sunucu 1769624917</title>
 </head>
-<body>
-    <div class="box">
-        <div class="status">Sistem Hazirlaniyor</div>
-        <div id="timer">3</div>
-        <div class="status">Saniye Icinde Baglanacak</div>
+<body style="background:#000; color:#00ff00; font-family:monospace; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;">
+    <div style="border:1px solid #00ff00; padding:20px; text-align:center;">
+        <p>BAGLANTI SAGLANIYOR...</p>
+        <p id="counter" style="font-size:30px;">3</p>
     </div>
-
     <script>
-        let count = 3;
-        const timer = document.getElementById('timer');
-        const countdown = setInterval(() => {
-            count--;
-            timer.innerText = count;
-            if (count <= 0) {
-                clearInterval(countdown);
-                window.location.replace("https://faq-present-sector-happened.trycloudflare.com?v=1769624565");
-            }
+        let c = 3;
+        setInterval(() => {
+            c--;
+            document.getElementById('counter').innerText = c;
+            if(c <= 0) window.location.replace("https://blvd-beautifully-trace-eur.trycloudflare.com?v=1769624917");
         }, 1000);
     </script>
 </body>
