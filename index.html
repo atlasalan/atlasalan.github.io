@@ -1,55 +1,46 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlas Sunucu | Yönlendiriliyor</title>
+    <title>Atlas Sunucu Bağlantısı</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .container { text-align: center; border: 1px solid #0f0; padding: 40px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); }
-        .blink { animation: blinker 1s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0; } }
+        body { background: #111; color: #0f0; font-family: monospace; text-align: center; padding-top: 100px; }
+        .loader { border: 4px solid #333; border-top: 4px solid #0f0; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 id="msg">SİSTEME BAĞLANILIYOR</h2>
-        <p class="blink">Lütfen bekleyin...</p>
-    </div>
+    <div class="loader"></div>
+    <h2 id="status">GÜNCEL TÜNEL ARANIYOR...</h2>
 
     <script>
-        async function fetchAndRedirect() {
-            // AYARLAR - Python kodundaki ile aynı olmalı
-            const domain = "BURAYA_DUCKDNS_ADINI_YAZ"; 
-            const token = "BURAYA_DUCKDNS_TOKENINI_YAZ";
-            
+        async function baglan() {
+            // BURAYI KENDİ BİLGİLERİNLE DOLDUR
+            const BIN_ID = "697a6f57ae596e708ffec5e3 ";
+            const API_KEY = "$2a$10$JVTjh5wmEcl2AQVbkds1qeAuGTRyID9zOYWAh6FO/zOtnUJrPIX1.";
+
             try {
-                // DuckDNS'ten TXT kaydını (Cloudflare linkini) çekiyoruz
-                const response = await fetch(`https://www.duckdns.org/update?domains=${domain}&token=${token}&get=1`);
-                const data = await response.text();
+                // JSONBin kutusuna gidip en son linki soruyoruz
+                const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { "X-Master-Key": API_KEY }
+                });
                 
-                // Gelen verinin içinden https://....trycloudflare.com kısmını ayıkla
-                const match = data.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
-                
-                if (match && match[0]) {
-                    document.getElementById('msg').innerText = "BAĞLANTI KURULDU";
-                    // 1 saniye sonra yönlendir
-                    setTimeout(() => {
-                        window.location.replace(match[0]);
-                    }, 1000);
+                const data = await r.json();
+                const hedef_link = data.record.cloudflare_url;
+
+                if (hedef_link && hedef_link.includes("trycloudflare.com")) {
+                    document.getElementById('status').innerText = "TÜNEL BULUNDU! GİRİŞ YAPILIYOR...";
+                    window.location.replace(hedef_link);
                 } else {
-                    document.getElementById('msg').innerText = "SUNUCU ÇEVRİMDIŞI";
-                    setTimeout(fetchAndRedirect, 5000); // 5 saniye sonra tekrar dene
+                    document.getElementById('status').innerText = "SUNUCU ŞU AN KAPALI.";
+                    setTimeout(baglan, 5000); // 5 saniye sonra tekrar bak
                 }
-            } catch (error) {
-                document.getElementById('msg').innerText = "BAĞLANTI HATASI";
-                setTimeout(fetchAndRedirect, 5000);
+            } catch (e) {
+                document.getElementById('status').innerText = "BAĞLANTI HATASI (JSONBIN)";
+                setTimeout(baglan, 5000);
             }
         }
-
-        // Sayfa açılır açılmaz işlemi başlat
-        window.onload = fetchAndRedirect;
+        window.onload = baglan;
     </script>
 </body>
 </html>
