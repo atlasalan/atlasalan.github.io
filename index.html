@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <title>Atlas Gateway</title>
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <script>
+        // Sayfa yuklendigi an, eger URL'de bir "v" parametresi yoksa sayfayi yenilemeye zorla
+        if(!window.location.search.includes('v=')) {
+            window.location.href = window.location.pathname + "?v=" + new Date().getTime();
+        }
+    </script>
 </head>
-<body style="background:#000; color:#00ff00; font-family:monospace; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; margin:0; text-align:center;">
-    
-    <div style="border:1px solid #00ff00; padding:20px;">
-        <h2>SISTEM AKTIF</h2>
-        <p style="color:#555;">Server TS: 1769625505</p>
-        <div id="timer" style="font-size:40px;">3</div>
+<body style="background:#000; color:#0f0; font-family:monospace; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;">
+    <div style="text-align:center;">
+        <h1 id="msg">TUNEL DOGRULANIYOR</h1>
+        <h2 id="timer">3</h2>
     </div>
-
     <script>
         let c = 3;
-        const t = document.getElementById('timer');
         setInterval(() => {
             c--;
-            t.innerText = c;
+            document.getElementById('timer').innerText = c;
             if(c <= 0) {
-                // JS TARAFINDA CANLI ZAMAN (URL SONUNDAKI SAYIYI DEGISTIREN ASIL KISIM)
-                const liveTS = new Date().getTime();
-                window.location.replace("https://traffic-buys-pics-telephone.trycloudflare.com?auth=" + liveTS);
+                // ASIL LINKIN SONUNA DA ZAMAN EKLE
+                window.location.replace("https://enforcement-maker-supplements-punch.trycloudflare.com?t=" + new Date().getTime());
             }
         }, 1000);
     </script>
