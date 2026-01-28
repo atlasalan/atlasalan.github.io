@@ -1,26 +1,55 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>AtlasAlan Sunucu</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas Sunucu | Yönlendiriliyor</title>
+    <style>
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .container { text-align: center; border: 1px solid #0f0; padding: 40px; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2); }
+        .blink { animation: blinker 1s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="msg">SİSTEME BAĞLANILIYOR</h2>
+        <p class="blink">Lütfen bekleyin...</p>
+    </div>
+
     <script>
-        async function yonlendir() {
-            const domain = "atlasalan";
-            const token = "0ba0dd27-a463-4c4a-9510-c43020097932";
+        async function fetchAndRedirect() {
+            // AYARLAR - Python kodundaki ile aynı olmalı
+            const domain = "BURAYA_DUCKDNS_ADINI_YAZ"; 
+            const token = "BURAYA_DUCKDNS_TOKENINI_YAZ";
+            
             try {
-                // DuckDNS'ten güncel linki çekiyoruz
-                const r = await fetch(`https://www.duckdns.org/update?domains=${domain}&token=${token}&get=1`);
-                const text = await r.text();
-                const link = text.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/)[0];
-                window.location.replace(link);
-            } catch (e) {
-                document.body.innerHTML = "Sunucu henüz hazır değil, 5 sn sonra tekrar denenecek...";
-                setTimeout(yonlendir, 5000);
+                // DuckDNS'ten TXT kaydını (Cloudflare linkini) çekiyoruz
+                const response = await fetch(`https://www.duckdns.org/update?domains=${domain}&token=${token}&get=1`);
+                const data = await response.text();
+                
+                // Gelen verinin içinden https://....trycloudflare.com kısmını ayıkla
+                const match = data.match(/https:\/\/[a-z0-9-]+\.trycloudflare\.com/);
+                
+                if (match && match[0]) {
+                    document.getElementById('msg').innerText = "BAĞLANTI KURULDU";
+                    // 1 saniye sonra yönlendir
+                    setTimeout(() => {
+                        window.location.replace(match[0]);
+                    }, 1000);
+                } else {
+                    document.getElementById('msg').innerText = "SUNUCU ÇEVRİMDIŞI";
+                    setTimeout(fetchAndRedirect, 5000); // 5 saniye sonra tekrar dene
+                }
+            } catch (error) {
+                document.getElementById('msg').innerText = "BAĞLANTI HATASI";
+                setTimeout(fetchAndRedirect, 5000);
             }
         }
-        window.onload = yonlendir;
+
+        // Sayfa açılır açılmaz işlemi başlat
+        window.onload = fetchAndRedirect;
     </script>
-</head>
-<body style="background:#000; color:#0f0; font-family:monospace; text-align:center; padding-top:50px;">
-    <h2>SISTEME BAGLANILIYOR...</h2>
 </body>
 </html>
