@@ -14,30 +14,32 @@
     <h2 id="status">GÜNCEL TÜNEL ARANIYOR...</h2>
 
     <script>
-        async function baglan() {
-            // BURAYI KENDİ BİLGİLERİNLE DOLDUR
-            const BIN_ID = "697a6f57ae596e708ffec5e3 ";
-            const API_KEY = "$2a$10$JVTjh5wmEcl2AQVbkds1qeAuGTRyID9zOYWAh6FO/zOtnUJrPIX1.";
+      async function baglan() {
+            const BIN_ID = "SENIN_BIN_ID";
+            const API_KEY = "SENIN_X_MASTER_KEY";
 
             try {
-                // JSONBin kutusuna gidip en son linki soruyoruz
                 const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
                     headers: { "X-Master-Key": API_KEY }
                 });
                 
+                // Eğer JSONBin hata döndürürse (401, 403, 404 vb.)
+                if (!r.ok) {
+                    throw new Error(`JSONBin Hatası: ${r.status}`);
+                }
+
                 const data = await r.json();
                 const hedef_link = data.record.cloudflare_url;
 
                 if (hedef_link && hedef_link.includes("trycloudflare.com")) {
-                    document.getElementById('status').innerText = "TÜNEL BULUNDU! GİRİŞ YAPILIYOR...";
                     window.location.replace(hedef_link);
                 } else {
-                    document.getElementById('status').innerText = "SUNUCU ŞU AN KAPALI.";
-                    setTimeout(baglan, 5000); // 5 saniye sonra tekrar bak
+                    document.getElementById('status').innerText = "SUNUCU KAPALI (Link Bulunamadı)";
                 }
             } catch (e) {
-                document.getElementById('status').innerText = "BAĞLANTI HATASI (JSONBIN)";
-                setTimeout(baglan, 5000);
+                // HATAYI EKRANA YAZDIRALIM
+                document.getElementById('status').innerText = "HATA: " + e.message;
+                console.error(e);
             }
         }
         window.onload = baglan;
