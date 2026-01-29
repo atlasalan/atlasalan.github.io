@@ -2,60 +2,23 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
-    <title>Atlas Sunucu Kontrol</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Atlas Sunucu Aktarımı</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .box { border: 2px solid #0f0; padding: 40px; text-align: center; box-shadow: 0 0 20px #0f0; background: #000; }
-        .bar-bg { width: 300px; height: 10px; border: 1px solid #0f0; margin-top: 20px; }
-        .bar-fill { width: 0%; height: 100%; background: #0f0; transition: width 2s linear; }
-        iframe { display: none; width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
+        body { background: #000; color: #0f0; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { border: 1px solid #0f0; padding: 20px; text-align: center; box-shadow: 0 0 15px #0f0; }
     </style>
 </head>
 <body>
-
-    <div id="loader" class="box">
-        <div id="msg">SISTEM DOGRULANIYOR...</div>
-        <div class="bar-bg"><div id="bar" class="bar-fill"></div></div>
+    <div class="box">
+        <h3>ATLAS SISTEM</h3>
+        <p>BAGLANTI SAGLANIYOR...</p>
     </div>
-
-    <iframe id="mainFrame" src=""></iframe>
-
     <script>
-        // PYTHON TARAFINDAN OTOMATIK DEGISTIRILEN ALANLAR
-        const tunnelUrl = "https://nothing-steven-favorites-trails.trycloudflare.com"; 
-        const ver = "1769692151"; 
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentUrlVer = urlParams.get('v');
-
-        // EĞER URL'DEKİ VERSİYON ESKİYSE (YA DA YOKSA) SAYFAYI TAZELE
-        if (currentUrlVer !== ver) {
-            window.location.replace(window.location.pathname + "?v=" + ver);
-        } else {
-            // Versiyon güncelse işlemleri başlat
-            window.onload = function() {
-                const bar = document.getElementById('bar');
-                const msg = document.getElementById('msg');
-                const frame = document.getElementById('mainFrame');
-
-                setTimeout(() => { bar.style.width = "100%"; }, 100);
-
-                setTimeout(() => {
-                    if (tunnelUrl !== "BEKLEMEDE") {
-                        msg.innerText = "BAGLANTI KURULDU!";
-                        frame.src = tunnelUrl + "?cache=" + ver;
-                        frame.onload = () => {
-                            document.getElementById('loader').style.display = 'none';
-                            frame.style.display = 'block';
-                        };
-                    } else {
-                        msg.innerText = "SUNUCU KAPALI!";
-                        msg.style.color = "red";
-                    }
-                }, 2500);
-            };
-        }
+        // Zaman damgalı yönlendirme (Tarayıcıyı tazelemeye zorlar)
+        window.location.replace("https://jesse-consensus-senator-breach.trycloudflare.com?v=1769693281697");
     </script>
 </body>
 </html>
