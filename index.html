@@ -3,65 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Atlas Sunucu Kontrol</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .loading-container { text-align: center; border: 2px solid #0f0; padding: 40px; box-shadow: 0 0 20px #0f0; z-index: 10; background: #000; }
-        .bar-container { width: 300px; height: 20px; border: 1px solid #0f0; margin-top: 20px; position: relative; }
-        .bar { width: 0%; height: 100%; background: #0f0; transition: width 3s linear; }
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .loading-container { text-align: center; border: 2px solid #0f0; padding: 40px; box-shadow: 0 0 20px #0f0; width: 400px; }
+        .bar-container { width: 100%; height: 10px; border: 1px solid #0f0; margin-top: 20px; }
+        .bar { width: 0%; height: 100%; background: #0f0; transition: width 0.5s; }
         iframe { display: none; width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
-        .status-text { margin-bottom: 10px; font-size: 1.2em; text-transform: uppercase; letter-spacing: 2px; }
+        .error { color: #ff0000; display: none; margin-top: 10px; font-size: 0.8em; }
     </style>
 </head>
 <body>
 
     <div id="loader" class="loading-container">
-        <div class="status-text" id="status">Sunucuya Baglaniliyor...</div>
-        <div class="bar-container">
-            <div id="progressBar" class="bar"></div>
-        </div>
+        <div id="status">SISTEM KONTROL EDILIYOR...</div>
+        <div class="bar-container"><div id="progressBar" class="bar"></div></div>
+        <div id="errorMsg" class="error">SUNUCUYA ULASILAMIYOR! YENI LINK BEKLENIYOR...</div>
     </div>
 
     <iframe id="serverFrame" src=""></iframe>
 
     <script>
-        // PYTHON TARAFINDAN GÜNCELLENECEK KISIM
-        const tunnelUrl = "https://sponsors-solid-raleigh-projectors.trycloudflare.com"; 
+        // PYTHON BURAYI GÜNCELLEYECEK
+        const tunnelUrl = "BEKLEMEDE"; 
 
-        window.onload = function() {
+        async function checkServer() {
             const bar = document.getElementById('progressBar');
             const status = document.getElementById('status');
+            const errorMsg = document.getElementById('errorMsg');
             const frame = document.getElementById('serverFrame');
-            const loader = document.getElementById('loader');
 
-            // 1. Önbellek Kırıcıyı Hazırla (Zaman Damgası)
-            const cacheBuster = "?v=" + new Date().getTime();
+            if (tunnelUrl === "BEKLEMEDE" || tunnelUrl === "") {
+                status.innerText = "YENI LINK BEKLENIYOR...";
+                setTimeout(checkServer, 5000); // 5 saniye sonra tekrar dene
+                return;
+            }
 
-            // 2. Yükleme Barını Başlat (3 Saniye)
-            setTimeout(() => {
+            bar.style.width = "50%";
+            status.innerText = "SUNUCU TEST EDILIYOR...";
+
+            try {
+                // Linke gizli bir istek atarak çalışıp çalışmadığını anlıyoruz (no-cors engelleri aşmak için)
+                const response = await fetch(tunnelUrl, { mode: 'no-cors' });
+                
+                // Eğer buraya kadar geldiyse link yaşıyordur
                 bar.style.width = "100%";
-            }, 100);
-
-            // 3. 3 Saniye Sonra İşlemi Yap
-            setTimeout(() => {
-                if (tunnelUrl === "BEKLEMEDE" || tunnelUrl === "") {
-                    status.innerText = "HATA: SUNUCU AKTIF DEGIL!";
-                    status.style.color = "red";
-                } else {
-                    status.innerText = "BAGLANTI BASARILI!";
-                    // Önbelleği kırmak için linki tazeleyerek frame'e bas
-                    frame.src = tunnelUrl + cacheBuster;
-                    
-                    // Frame'in tamamen yüklenmesini bekle ve göster
-                    frame.onload = function() {
-                        loader.style.display = 'none';
+                status.innerText = "BAGLANTI BASARILI!";
+                
+                setTimeout(() => {
+                    frame.src = tunnelUrl + "?v=" + Date.now();
+                    frame.onload = () => {
+                        document.getElementById('loader').style.display = 'none';
                         frame.style.display = 'block';
                     };
-                }
-            }, 3000); // 3000ms = 3 Saniye
-        };
+                }, 1000);
+
+            } catch (error) {
+                // Linke ulaşılamıyorsa buraya düşer
+                bar.style.width = "10%";
+                status.innerText = "BAGLANTI HATASI";
+                errorMsg.style.display = "block";
+                console.log("Sunucu kapalı, yeniden deneniyor...");
+                
+                // 5 saniye sonra sayfayı yenile (Böylece Python yeni linki attıysa onu alır)
+                setTimeout(() => { location.reload(); }, 5000);
+            }
+        }
+
+        window.onload = checkServer;
     </script>
 </body>
 </html>
