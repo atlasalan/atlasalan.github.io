@@ -4,14 +4,32 @@
     <meta charset="UTF-8">
     <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
     <title>Atlas Sunucu</title>
+    <script>
+        // ÖNBELLEK PATLATICI OTOMASYON
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('t')) {
+            // Eğer URL'de 't' parametresi yoksa, milisaniyelik zamanı ekle ve sayfayı tazele
+            window.location.replace(window.location.pathname + "?t=" + Date.now());
+        }
+    </script>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; color: #0f0; font-family: monospace; }
         iframe { width: 100%; height: 100%; border: none; }
-        #loading { color: #0f0; font-family: monospace; text-align: center; margin-top: 20%; }
+        .loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
     </style>
 </head>
 <body>
-    <div id="loading">BAGLANTI KURULUYOR...</div>
-    <iframe src="https://drugs-huge-rica-police.trycloudflare.com?v=1769693523" onload="document.getElementById('loading').style.display='none';"></iframe>
+    <div id="status" class="loading">SISTEM KONTROL EDILIYOR...</div>
+    
+    <script>
+        const tunnelUrl = "BURAYA_CLOUDFLARE_LINKI_GELECEK";
+        
+        if (tunnelUrl !== "BURAYA_CLOUDFLARE_LINKI_GELECEK") {
+            document.write('<iframe src="' + tunnelUrl + '?cache=' + Date.now() + '"></iframe>');
+            document.getElementById('status').style.display = 'none';
+        } else {
+            document.getElementById('status').innerText = "SUNUCU HENUZ AKTIF DEGIL!";
+        }
+    </script>
 </body>
 </html>
