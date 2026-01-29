@@ -1,30 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Atlas Sunucu</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Atlas Sunucu Kontrol</title>
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .box { border: 1px solid #0f0; padding: 30px; text-align: center; box-shadow: 0 0 20px #0f0; }
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        .loading-container { text-align: center; border: 2px solid #0f0; padding: 40px; box-shadow: 0 0 20px #0f0; z-index: 10; background: #000; }
+        .bar-container { width: 300px; height: 20px; border: 1px solid #0f0; margin-top: 20px; position: relative; }
+        .bar { width: 0%; height: 100%; background: #0f0; transition: width 3s linear; }
         iframe { display: none; width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
+        .status-text { margin-bottom: 10px; font-size: 1.2em; text-transform: uppercase; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-    <div id="loader" class="box">
-        <h1>ATLAS SISTEMI</h1>
-        <p>SUNUCUYA BAGLANILIYOR...</p>
+
+    <div id="loader" class="loading-container">
+        <div class="status-text" id="status">Sunucuya Baglaniliyor...</div>
+        <div class="bar-container">
+            <div id="progressBar" class="bar"></div>
+        </div>
     </div>
-    <iframe id="f" src=""></iframe>
+
+    <iframe id="serverFrame" src=""></iframe>
+
     <script>
-        const tunnelUrl = "https://classic-vacations-bike-criticism.trycloudflare.com"; // Python burayi otomatik degistirecek
-        const frame = document.getElementById('f');
-        if(tunnelUrl !== "BEKLEMEDE") {
-            frame.src = tunnelUrl + "?v=" + Date.now();
-            frame.onload = () => {
-                document.getElementById('loader').style.display = 'none';
-                frame.style.display = 'block';
-            };
-        }
+        // PYTHON TARAFINDAN GÜNCELLENECEK KISIM
+        const tunnelUrl = "BEKLEMEDE"; 
+
+        window.onload = function() {
+            const bar = document.getElementById('progressBar');
+            const status = document.getElementById('status');
+            const frame = document.getElementById('serverFrame');
+            const loader = document.getElementById('loader');
+
+            // 1. Önbellek Kırıcıyı Hazırla (Zaman Damgası)
+            const cacheBuster = "?v=" + new Date().getTime();
+
+            // 2. Yükleme Barını Başlat (3 Saniye)
+            setTimeout(() => {
+                bar.style.width = "100%";
+            }, 100);
+
+            // 3. 3 Saniye Sonra İşlemi Yap
+            setTimeout(() => {
+                if (tunnelUrl === "BEKLEMEDE" || tunnelUrl === "") {
+                    status.innerText = "HATA: SUNUCU AKTIF DEGIL!";
+                    status.style.color = "red";
+                } else {
+                    status.innerText = "BAGLANTI BASARILI!";
+                    // Önbelleği kırmak için linki tazeleyerek frame'e bas
+                    frame.src = tunnelUrl + cacheBuster;
+                    
+                    // Frame'in tamamen yüklenmesini bekle ve göster
+                    frame.onload = function() {
+                        loader.style.display = 'none';
+                        frame.style.display = 'block';
+                    };
+                }
+            }, 3000); // 3000ms = 3 Saniye
+        };
     </script>
 </body>
 </html>
