@@ -2,75 +2,60 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
     <title>Atlas Sunucu Kontrol</title>
     <style>
         body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .loading-container { text-align: center; border: 2px solid #0f0; padding: 40px; box-shadow: 0 0 20px #0f0; width: 400px; }
-        .bar-container { width: 100%; height: 10px; border: 1px solid #0f0; margin-top: 20px; }
-        .bar { width: 0%; height: 100%; background: #0f0; transition: width 0.5s; }
+        .box { border: 2px solid #0f0; padding: 40px; text-align: center; box-shadow: 0 0 20px #0f0; background: #000; }
+        .bar-bg { width: 300px; height: 10px; border: 1px solid #0f0; margin-top: 20px; }
+        .bar-fill { width: 0%; height: 100%; background: #0f0; transition: width 2s linear; }
         iframe { display: none; width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
-        .error { color: #ff0000; display: none; margin-top: 10px; font-size: 0.8em; }
     </style>
 </head>
 <body>
 
-    <div id="loader" class="loading-container">
-        <div id="status">SISTEM KONTROL EDILIYOR...</div>
-        <div class="bar-container"><div id="progressBar" class="bar"></div></div>
-        <div id="errorMsg" class="error">SUNUCUYA ULASILAMIYOR! YENI LINK BEKLENIYOR...</div>
+    <div id="loader" class="box">
+        <div id="msg">SISTEM DOGRULANIYOR...</div>
+        <div class="bar-bg"><div id="bar" class="bar-fill"></div></div>
     </div>
 
-    <iframe id="serverFrame" src=""></iframe>
+    <iframe id="mainFrame" src=""></iframe>
 
     <script>
-        // PYTHON BURAYI GÜNCELLEYECEK
-        const tunnelUrl = "https://absorption-nav-types-semiconductor.trycloudflare.com"; 
+        // PYTHON TARAFINDAN OTOMATIK DEGISTIRILEN ALANLAR
+        const tunnelUrl = "BEKLEMEDE"; 
+        const ver = "1000000000"; 
 
-        async function checkServer() {
-            const bar = document.getElementById('progressBar');
-            const status = document.getElementById('status');
-            const errorMsg = document.getElementById('errorMsg');
-            const frame = document.getElementById('serverFrame');
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentUrlVer = urlParams.get('v');
 
-            if (tunnelUrl === "BEKLEMEDE" || tunnelUrl === "") {
-                status.innerText = "YENI LINK BEKLENIYOR...";
-                setTimeout(checkServer, 5000); // 5 saniye sonra tekrar dene
-                return;
-            }
+        // EĞER URL'DEKİ VERSİYON ESKİYSE (YA DA YOKSA) SAYFAYI TAZELE
+        if (currentUrlVer !== ver) {
+            window.location.replace(window.location.pathname + "?v=" + ver);
+        } else {
+            // Versiyon güncelse işlemleri başlat
+            window.onload = function() {
+                const bar = document.getElementById('bar');
+                const msg = document.getElementById('msg');
+                const frame = document.getElementById('mainFrame');
 
-            bar.style.width = "50%";
-            status.innerText = "SUNUCU TEST EDILIYOR...";
+                setTimeout(() => { bar.style.width = "100%"; }, 100);
 
-            try {
-                // Linke gizli bir istek atarak çalışıp çalışmadığını anlıyoruz (no-cors engelleri aşmak için)
-                const response = await fetch(tunnelUrl, { mode: 'no-cors' });
-                
-                // Eğer buraya kadar geldiyse link yaşıyordur
-                bar.style.width = "100%";
-                status.innerText = "BAGLANTI BASARILI!";
-                
                 setTimeout(() => {
-                    frame.src = tunnelUrl + "?v=" + Date.now();
-                    frame.onload = () => {
-                        document.getElementById('loader').style.display = 'none';
-                        frame.style.display = 'block';
-                    };
-                }, 1000);
-
-            } catch (error) {
-                // Linke ulaşılamıyorsa buraya düşer
-                bar.style.width = "10%";
-                status.innerText = "BAGLANTI HATASI";
-                errorMsg.style.display = "block";
-                console.log("Sunucu kapalı, yeniden deneniyor...");
-                
-                // 5 saniye sonra sayfayı yenile (Böylece Python yeni linki attıysa onu alır)
-                setTimeout(() => { location.reload(); }, 5000);
-            }
+                    if (tunnelUrl !== "BEKLEMEDE") {
+                        msg.innerText = "BAGLANTI KURULDU!";
+                        frame.src = tunnelUrl + "?cache=" + ver;
+                        frame.onload = () => {
+                            document.getElementById('loader').style.display = 'none';
+                            frame.style.display = 'block';
+                        };
+                    } else {
+                        msg.innerText = "SUNUCU KAPALI!";
+                        msg.style.color = "red";
+                    }
+                }, 2500);
+            };
         }
-
-        window.onload = checkServer;
     </script>
 </body>
 </html>
