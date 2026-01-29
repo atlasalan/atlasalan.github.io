@@ -1,45 +1,30 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Atlas Sunucu Sistemi</title>
+    <title>Atlas Sunucu</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        .loading-box { text-align: center; border: 1px solid #0f0; padding: 20px; box-shadow: 0 0 15px #0f0; }
-        .dots { display: inline-block; width: 20px; text-align: left; }
+        body { background: #000; color: #0f0; font-family: monospace; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .box { border: 1px solid #0f0; padding: 30px; text-align: center; box-shadow: 0 0 20px #0f0; }
         iframe { display: none; width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
     </style>
 </head>
 <body>
-
-    <div id="loader" class="loading-box">
-        <h2>Atlas ALAN</h2>
-        <p id="status">Siteye bağlanıyorsunuz...<span class="dots">...</span></p>
+    <div id="loader" class="box">
+        <h1>ATLAS SISTEMI</h1>
+        <p>SUNUCUYA BAGLANILIYOR...</p>
     </div>
-
-    <iframe id="serverFrame" src=""></iframe>
-
+    <iframe id="f" src=""></iframe>
     <script>
-        // Python'un güncelleyeceği link burası
-        const tunnelUrl = "https://SENIN-LINKIN.trycloudflare.com"; 
-        const frame = document.getElementById('serverFrame');
-        const loader = document.getElementById('loader');
-        const status = document.getElementById('status');
-
-        // Önbellek kırmak için linke zaman damgası ekle
-        const finalUrl = tunnelUrl + "?v=" + new Date().getTime();
-
-        // Frame yüklenince loader'ı gizle, frame'i göster
-        frame.onload = function() {
-            status.innerText = "BAGLANTI BASARILI!";
-            setTimeout(() => {
-                loader.style.display = 'none';
+        const tunnelUrl = "BEKLEMEDE"; // Python burayi otomatik degistirecek
+        const frame = document.getElementById('f');
+        if(tunnelUrl !== "BEKLEMEDE") {
+            frame.src = tunnelUrl + "?v=" + Date.now();
+            frame.onload = () => {
+                document.getElementById('loader').style.display = 'none';
                 frame.style.display = 'block';
-            }, 1000);
-        };
-
-        // Linki yükle
-        frame.src = finalUrl;
+            };
+        }
     </script>
 </body>
 </html>
