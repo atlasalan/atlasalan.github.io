@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tılason</title>
+    <style>
+        :root { --neon: #38bdf8; --bg: #0d1117; --card: #161b22; }
+        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; padding: 40px; }
+        .box { background: var(--card); padding: 30px; border-radius: 15px; border: 1px solid var(--neon); width: 400px; }
+        input, textarea, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
+        button { background: var(--neon); color: #0d1117; font-weight: bold; cursor: pointer; border: none; }
+        .info { font-size: 11px; color: #8b949e; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2 style="color:var(--neon); text-align:center;">🚀yükle</h2>
+    
+    <input type="password" id="ghToken" placeholder="GitHub Token Gir (Asla Kaydedilmez)">
+    
+    <input type="text" id="gameName" placeholder="Oyun Adı">
+    <textarea id="gameDesc" placeholder="Açıklama"></textarea>
+    <input type="file" id="gameFile" accept=".html">
+    
+    <button onclick="safeUpload()">SİSTEME GÖNDER</button>
+    <div id="status" style="text-align:center; margin-top:10px; font-size:12px; color:var(--neon);">Bekleniyor...</div>
+    
+    <p class="info">Bruh</p>
+</div>
+
+<script>
+async function safeUpload() {
+    const token = document.getElementById('ghToken').value;
+    const name = document.getElementById('gameName').value;
+    const desc = document.getElementById('gameDesc').value;
+    const file = document.getElementById('gameFile').files[0];
+    const status = document.getElementById('status');
+
+    if(!token) { alert("Token girmeden işlem yapamazsın!"); return; }
+
+    status.innerText = "Yükleniyor...";
+    
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+        const content = reader.result.split(',')[1];
+        const fileName = Date.now() + "_" + file.name;
+        const path = `oyunlar/${fileName}`;
+
+        try {
+            // GitHub'a gönder
+            const gh = await fetch(`https://api.github.com/repos/atlasalan/atlasalan.github.io/contents/${path}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}` },
+                body: JSON.stringify({ message: "Oyun Yukle", content: content })
+            });
+
+            if(!gh.ok) throw new Error("Şifre (Token) Hatalı!");
+
+            // Ana siteyi güncelle
+            const fd = new FormData();
+            fd.append('isim', name); fd.append('aciklama', desc);
+            fd.append('link', `https://atlasalan.github.io/${path}`);
+            fd.append('token', token);
+
+            await fetch('https://atlasalan.fun/api_guncelle.php', { method: 'POST', body: fd });
+            status.innerText = "BAŞARILI!";
+        } catch (e) {
+            status.innerText = "HATA: " + e.message;
+        }
+    };
+}
+</script>
+</body>
+</html>
